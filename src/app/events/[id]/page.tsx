@@ -1,18 +1,44 @@
 "use client";
 
+import { detailsTabs, dummyEvents } from "@/components/data";
+import EventScheduleItem from "@/components/events/EventScheduleItem";
+import EventTable from "@/components/events/EventTable";
 import EventTag from "@/components/events/EventTag";
+import EventTicketPrice from "@/components/events/EventTicketPrice";
+import EventWorkshopItem from "@/components/events/EventWorkshopItem";
 import { Button } from "@/components/ui/button";
+import { epochToDatetime } from "datetime-epoch-conversion";
 import Image from "next/image";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import "react-tabs/style/react-tabs.css";
 
 const page = () => {
   const [tabIndex, setTabIndex] = useState(0);
+  const params = useParams<{ id: string }>();
+  const eventDetails = dummyEvents.find(
+    (event) => event.eventId === Number(params.id)
+  );
+  const {
+    eventName,
+    eventStartDate,
+    eventLocation,
+    description,
+    numberOfTickets,
+    paid,
+    schedule,
+    ticketsType,
+    workshops,
+    speakers,
+    sponsors,
+  }: any = eventDetails;
+
+  const response = epochToDatetime(`${eventStartDate}`);
 
   return (
-    <div className="my-8 flex justify-center items-center">
-      <div className="w-3/4 flex flex-col gap-10">
+    <div className="my-12 flex justify-center items-center">
+      <div className=" flex flex-col gap-10">
         <div className="flex gap-10">
           <div className="flex flex-col w-96">
             <Image
@@ -30,88 +56,205 @@ const page = () => {
                 height={467}
               />
               <p className="bg-[#0D004233] text-black font-semibold w-[90%] rounded-md p-2 mx-5 -m-12">
-                The Zone Tech Park, Gbagada.
+                {eventLocation}
               </p>
             </div>
-            <div></div>
+            <div
+              className={`${
+                paid ? "flex" : "hidden"
+              }  mt-10  gap-3 flex-grow flex-wrap`}
+            >
+              {ticketsType.map(
+                (
+                  { type, price }: { type: string; price: number },
+                  index: React.Key | null | undefined
+                ) => (
+                  <EventTicketPrice
+                    key={index}
+                    price={price}
+                    ticketType={type}
+                  />
+                )
+              )}
+            </div>
           </div>
           <div className="flex flex-col gap-8">
             <div className="flex justify-between ">
-              <EventTag />
+              <EventTag paid={paid} />
               <Button className="bg-principal border border-principal text-textPrincipal text-base font-semibold py-2 px-4 rounded-full hover:text-principal hover:bg-transparent md:py-3 md:px-6 md:text-base">
                 Register
               </Button>
             </div>
             <div className="gap-4">
               <div className="text-4xl font-semibold text-white">
-                Web3 Lagos Conference
+                {eventName}
               </div>
               <div className="flex items-center gap-4">
                 <h1 className="text-principal text-2xl font-semibold">
-                  14TH November, 2024
+                  {response.day} {response.month}, {response.year}
                 </h1>
                 <Image src={"/oui_dot.png"} alt="dot" width={20} height={20} />
                 <h1 className="text-principal text-2xl font-semibold">
-                  9:00AM
+                  {response.time}
                 </h1>
               </div>
             </div>
-            <p className="text-white w-[620px]">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid
-              iure dolore in expedita cumque, commodi incidunt debitis
-              recusandae? Labore quam dolore porro, sequi provident ab debitis
-              adipisci alias eaque in?
-            </p>
-            <Tabs  selectedIndex={tabIndex}
-      onSelect={(index) => setTabIndex(index)}>
+            <p className="text-white w-[620px]">{description}</p>
+            <Tabs
+              selectedIndex={tabIndex}
+              onSelect={(index) => setTabIndex(index)}
+            >
               <TabList
                 className={
                   "border-[#F5F5F5] border rounded-md flex justify-evenly text-white mb-6"
                 }
               >
-                <Tab selectedClassName="bg-principal font-semibold text-black">Schedule</Tab>
-                <Tab selectedClassName="bg-principal font-semibold text-black">Tickets</Tab>
-                <Tab selectedClassName="bg-principal font-semibold text-black">Workshops</Tab>
-                <Tab selectedClassName="bg-principal font-semibold text-black">Speakers</Tab>
-                <Tab selectedClassName="bg-principal font-semibold text-black">Sponsors</Tab>
+                {detailsTabs.map((eachTab, index) => (
+                  <Tab
+                    key={index}
+                    selectedClassName="bg-principal font-semibold text-black"
+                  >
+                    {eachTab}
+                  </Tab>
+                ))}
               </TabList>
 
-              <TabPanel className={"border border-principal p-4 rounded-md bg-subsidiary text-white"}>
-                <h2>Any content 1</h2>
+              <TabPanel
+                className={`${
+                  tabIndex === 0 ? "" : "hidden"
+                }  border border-principal p-4 rounded-md bg-subsidiary text-white`}
+              >
+                {schedule.map(
+                  (
+                    eachSchedule: {
+                      time: string;
+                      title: string;
+                      description: string;
+                    },
+                    index: React.Key | null | undefined
+                  ) => (
+                    <EventScheduleItem
+                      scheduleItem={eachSchedule}
+                      key={index}
+                    />
+                  )
+                )}
               </TabPanel>
-              <TabPanel className={"border border-principal p-4 rounded-md bg-subsidiary text-white"}>
-                <h2>Any content 2</h2>
+              <TabPanel
+                className={`${
+                  tabIndex === 1 ? "" : "hidden"
+                } border border-principal p-4 rounded-md bg-subsidiary text-white`}
+              >
+                <EventTable ticketsType={ticketsType} />
               </TabPanel>
-              <TabPanel className={"border border-principal p-4 rounded-md bg-subsidiary text-white"}>
-                <h2>Any content 3</h2>
+              <TabPanel
+                className={`${
+                  tabIndex === 2 ? "" : "hidden"
+                } border border-principal p-4 rounded-md bg-subsidiary text-white`}
+              >
+                {workshops.map(
+                  (
+                    eachWorkshop: {
+                      name: string;
+                      description: string;
+                    },
+                    index: React.Key | null | undefined
+                  ) => (
+                    <EventWorkshopItem
+                      workshopItem={eachWorkshop}
+                      itemNo={index}
+                      key={index}
+                    />
+                  )
+                )}
               </TabPanel>
-              <TabPanel className={"border border-principal p-4 rounded-md bg-subsidiary text-white"}>
-                <h2>Any content 4</h2>
+              <TabPanel
+                className={`${
+                  tabIndex === 3 ? "" : "hidden"
+                } border border-principal p-4 rounded-md bg-subsidiary text-white `}
+              >
+                <div className="flex flex-wrap gap-3">
+                  {speakers.map(
+                    (
+                      {
+                        name,
+                        img,
+                        description,
+                      }: { name: string; img: string; description: string },
+                      index: React.Key | null | undefined
+                    ) => (
+                      <div
+                        key={index}
+                        className="flex flex-col justify-center items-center gap-1 flex-grow"
+                      >
+                        <Image src={img} alt={name} width={100} height={100} />
+                        <h1 className="font-semibold text-white text-lg">
+                          {name}
+                        </h1>
+                        <p className="font-sm text-white">{description}</p>
+                      </div>
+                    )
+                  )}
+                </div>
               </TabPanel>
-              <TabPanel className={"border border-principal p-4 rounded-md bg-subsidiary text-white"}>
-                <h2>Any content 5</h2>
+              <TabPanel
+                className={`${
+                  tabIndex === 4 ? "" : "hidden"
+                } border border-principal p-4 rounded-md bg-subsidiary text-white`}
+              >
+                <div className="flex items-center gap-4 flex-wrap flex-grow">
+                  {sponsors.map(
+                    (
+                      {
+                        type,
+                        img,
+                      }: {
+                        type: string;
+                        img: string;
+                      },
+                      index: React.Key | null | undefined
+                    ) => (
+                      <Image
+                        src={img}
+                        alt={type}
+                        width={150}
+                        height={50}
+                        key={index}
+                        objectFit="center"
+                      />
+                    )
+                  )}{" "}
+                </div>
               </TabPanel>
             </Tabs>
           </div>
         </div>
         <div className="bg-subsidiary border border-principal py-5  text-white flex items-center  rounded-md justify-evenly w-full">
           <div className="flex justify-center items-center">
-            <h1 className="text-white font-semibold text-4xl">1500</h1>
+            <h1 className="text-white font-semibold text-4xl">
+              {numberOfTickets}
+            </h1>
             <p className="text-white font-extralight text-5xl">|</p>
             <p className="text-sm text-white italic text-right">Attendees</p>
           </div>
           <div className="flex justify-center items-center">
-            <h1 className="text-white font-semibold text-4xl">200</h1>
+            <h1 className="text-white font-semibold text-4xl">
+              {speakers.length}
+            </h1>
             <p className="text-white font-extralight text-5xl">|</p>
             <p className="text-sm text-white italic text-right">Speaker</p>
           </div>
           <div className="flex justify-center items-center">
-            <h1 className="text-white font-semibold text-4xl">18</h1>
+            <h1 className="text-white font-semibold text-4xl">
+              {sponsors.length}
+            </h1>
             <p className="text-white font-extralight text-5xl">|</p>
             <p className="text-sm text-white italic text-right">Sponsors</p>
           </div>
           <div className="flex justify-center items-center">
-            <h1 className="text-white font-semibold text-4xl">1800</h1>
+            <h1 className="text-white font-semibold text-4xl">
+              {numberOfTickets}
+            </h1>
             <p className="text-white font-extralight text-5xl">|</p>
             <p className="text-sm text-white italic text-right">Tickets</p>
           </div>

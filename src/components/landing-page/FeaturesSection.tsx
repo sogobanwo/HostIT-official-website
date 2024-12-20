@@ -11,8 +11,8 @@ type Props = {};
 const FeaturesSection = (props: Props) => {
   return (
     
-      <div className="max-w-[1280px] mx-auto justify-between flex items-center flex-row flex-wrap space-x-4 my-20 ">
-        <div className="flex space-x-8 z-50">
+      <div className="max-w-[1280px] mx-auto justify-between flex items-center flex-row flex-wrap-reverse space-x-4 my-20 ">
+        <div className="flex flex-row justify-center flex-wrap mx-[5%] md:space-x-4 z-50">
           <div className="flex flex-col md:mt-20">
             {featuresCardDetails1.map((details, index) => {
               return (
