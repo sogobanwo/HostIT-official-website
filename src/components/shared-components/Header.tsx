@@ -14,13 +14,27 @@ import {
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaSquareXTwitter, FaYoutube } from "react-icons/fa6";
 import { RiInstagramFill } from "react-icons/ri";
+import Link from "next/link";
 
 const Header = () => {
   return (
     <div className="flex justify-between items-center border border-subsidiary rounded-[35px] max-w-[892px] md:mx-auto mx-4 py-3 md:py-4 px-5 md:px-10 mt-5 md:mt-10">
-      <Image src={"/logo.png"} width={149} height={47} alt="HostIt logo" className="hidden md:flex" />
-      <Image src={"/mobile-logo.png"} width={30} height={30} alt="HostIt logo" className="flex md:hidden" />
-
+      <Link href={"/"}>
+        <Image
+          src={"/logo.png"}
+          width={149}
+          height={47}
+          alt="HostIt logo"
+          className="hidden md:flex"
+        />
+        <Image
+          src={"/mobile-logo.png"}
+          width={30}
+          height={30}
+          alt="HostIt logo"
+          className="flex md:hidden"
+        />
+      </Link>
       <Dialog>
         <DialogTrigger className="flex items-center gap-2 text-white md:text-lg bg-subsidiary px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-black">
           Launch App <BsFillRocketTakeoffFill />
