@@ -12,11 +12,6 @@ import { Overview } from "@/components/overview";
 import Footer from "@/components/shared-components/Footer";
 import Header from "@/components/shared-components/Header";
 
-export const metadata: Metadata = {
-  title: "Events Platform Dashboard",
-  description: "A dashboard showing metrics for an events platform",
-};
-
 export default function DashboardPage() {
   return (
     <div className="mx-auto space-y-8 max-w-[1280px]">
