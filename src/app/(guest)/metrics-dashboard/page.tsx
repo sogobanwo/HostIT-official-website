@@ -16,7 +16,7 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto space-y-8 max-w-[1280px]">
       <Header />
-      <div className="md:h-[70vh] flex flex-col justify-center items-center">
+      <div className="my-10 flex flex-col justify-center items-center">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-semibold tracking-tight">
