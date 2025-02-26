@@ -18,7 +18,19 @@ const page = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1, duration: 1.5 }}
-        className="max-w-[1280px] mx-auto"
+        className="flex md:hidden"
+      >
+        <img
+          src={"/mobile-hostitgif.gif"}
+          alt="hostit-gif"
+          className="shadow-2xl"
+        />
+      </motion.div>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 1.5 }}
+        className="max-w-[1280px] mx-auto hidden md:flex"
       >
         <img
           src={"/hostitgif.gif"}
