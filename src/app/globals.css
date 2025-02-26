@@ -89,10 +89,67 @@ body {
   }
 }
 
-.clip-path-polygon-left {
-  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 90%, 50% 50%, 0% 10%, 0% 0%);
+html {
+  scroll-behavior: smooth;
 }
 
-.clip-path-polygon-right {
-  clip-path: polygon(0% 0%, 100% 0%, 100% 10%, 50% 50%, 100% 90%, 100% 100%, 0% 100%, 0% 0%);
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis.stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis.smooth iframe {
+  pointer-events: none;
+}
+
+body{
+  overflow: hidden;
+}
+
+@font-face {
+  font-family: 'Aeonik';
+  src: url('./fonts/Aeonik-Regular.otf');
+}
+@font-face {
+  font-family: 'Aeonik-bold';
+  src: url('./fonts/Aeonik-Bold.otf');
+}
+@font-face {
+  font-family: 'Aeonik-light';
+  src: url('./fonts/Aeonik-Light.otf');
+}
+
+body {
+  font-family: 'Aeonik', sans-serif;
+}
+
+.Aeonik-bold {
+  font-family: 'Aeonik-bold', sans-serif;
+}
+
+.Aeonik-light {
+  font-family: 'Aeonik-light', sans-serif;
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

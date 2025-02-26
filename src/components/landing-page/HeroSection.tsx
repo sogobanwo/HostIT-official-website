@@ -1,101 +1,67 @@
 import React from "react";
-import Header from "../shared-components/Header";
 import { Button } from "../ui/button";
-import Image from "next/image";
-import { useIsSmallMobile } from "@/hooks/use-mobile";
-import { motion } from "framer-motion";
+import { motion } from "framer-motion"; // Import Framer Motion
 
 const HeroSection = () => {
-  const isSmallMobile = useIsSmallMobile();
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3, // Stagger animations for children
+      },
+    },
+  };
+
+  const childVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
 
   return (
-    <div className="overflow-x-hidden overflow-y-hidden bg-gradient-to-tr from-[#595858] to-[#000107] relative w-full">
-      <motion.img
-        src="/dot.png"
-        alt="Background Image 1"
-        className="absolute top-1/4 left-1/3 transform -translate-x-1/2 -translate-y-1/2"
-      //   initial={{ top: 1 / 4 }}
-      //   animate={{ top: 1 / 2 }
-      // }
-      //   transition={{
-      //     duration: 5,
-      //     repeat: Infinity,
-      //     ease: "easeOut",
-      //     bounce: 0.5,
-      //   }}
-      />
-      <img
-        src="/dots.png"
-        alt="Background Image 2"
-        className="absolute hidden md:flex top-[3%] right-[42%]"
-      />
-      <img
-        src="/right-hero-glow.png"
-        alt="Background Image 3"
-        className="absolute bottom-0 w-full h-full hidden lg:flex"
-      />
-      <img
-        src="/dot.png"
-        alt="Background Image 4"
-        className="absolute bottom-0 left-0"
-      />
-      <img
-        src="dots.png"
-        alt="Background Image 5"
-        className="absolute -bottom-36 left-1/4"
-      />
-      <motion.img
-        src="/dot.png"
-        alt="Background Image 6"
-        className="absolute bottom-1/4 right-[45%]"
-        initial={{ bottom: 1 / 4 }}
-        animate={{ bottom: 1 / 2 }}
-        transition={{
-          duration: 5,
-          repeat: Infinity,
-          ease: "easeOut",
-          bounce: 0.5,
-        }}
-      />
-      <img
-        src="/dot.png"
-        alt="Background Image 7"
-        className="absolute top-[10%] left-0"
-      />
-      <img
-        src="/dots.png"
-        alt="Background Image 8"
-        className="absolute top-[15%] -left-10 rotate-45"
-      />
+    <motion.div
+      className="h-[50vh] mx-auto max-w-[715px] flex flex-col items-center justify-center text-center gap-6 px-4"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Animated Heading */}
+      <motion.h1
+        className="text-center text-wrap bg-gradient-to-r from-[#007CFA] from-30% to-white to-95% bg-clip-text text-transparent text-4xl font-semibold md:text-6xl md:font-normal"
+        variants={childVariants}
+      >
+        Your Event, Your Rules—We Handle the Rest.
+      </motion.h1>
 
-      <div className="max-w-[1280px] mx-auto my-3 z-20 relative">
-        <Header />
-        <div className="flex flex-wrap-reverse justify-between items-center mx-6 md:mx-2 my-12 md:my-20 h-full gap-8">
-          <div className="flex flex-col gap-2 md:gap-8">
-            <h1 className="font-medium text-3xl md:text-6xl text-white">
-              Secure your <span className="text-principal italic">Events</span>
-            </h1>
-            <h1 className="font-medium text-3xl md:text-6xl text-white">
-              with Confidence!
-            </h1>
-            <div className="font-normal text-lg md:text-3xl text-white md:w-[470px]">
-              The future of ticketing is here—decentralized, transparent, and
-              fully secure.
-            </div>
-            <Button className="w-60 mt-4 md:mt-0 md:w-80 bg-principal border border-principal text-textPrincipal text-base font-semibold py-4 px-4 rounded-full hover:text-principal hover:bg-transparent md:py-6 md:px-12 md:text-xl">
-              Get Started
-            </Button>
-          </div>
-          <Image
-            src="/hero-image.png"
-            alt="hero-image"
-            width={isSmallMobile ? 200 : 600}
-            height={750}
-            className="hidden sm:flex"
-          />
-        </div>
-      </div>
-    </div>
+      {/* Animated Paragraph */}
+      <motion.p
+        className="text-lg mx-auto max-w-[408px]"
+        variants={childVariants}
+      >
+        HostIt simplifies ticketing and verification, so you can focus on
+        creating experiences. Let’s build something amazing.
+      </motion.p>
+
+      {/* Animated Button */}
+      <motion.div
+        variants={childVariants}
+        whileHover={{ scale: 1.05 }} // Scale up on hover
+        whileTap={{ scale: 0.95 }} // Scale down on click
+      >
+        <a href="https://calendly.com/fullstackchat/30min" target="_blank">
+          <Button className="flex items-center justify-center gap-2 text-white text-base md:text-lg bg-subsidiary p-6 mx-auto">
+            Request Our Services
+          </Button>
+        </a>
+      </motion.div>
+    </motion.div>
   );
 };
 

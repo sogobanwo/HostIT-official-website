@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
 import "./globals.css";
-import { Providers } from "./providers";
+import { ReactLenis } from "@/utils/lenis";
 
 export const metadata: Metadata = {
   title: "HostIT",
@@ -14,12 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`antialiased`}>
-        <Providers>
-          {children}
-        </Providers>
-      </body>
+    <html lang="en" style={{ overflowY: "scroll" }}>
+      <ReactLenis root>
+        <body className={`bg-[#131939] antialiased text-text`}>{children}</body>
+      </ReactLenis>
     </html>
   );
 }

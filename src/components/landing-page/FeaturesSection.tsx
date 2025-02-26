@@ -1,59 +1,93 @@
-import React from "react";
 import FeaturesCard from "./FeaturesCard";
-import { Button } from "../ui/button";
-import {
-  featuresCardDetails1,
-  featuresCardDetails2,
-} from "@/app/dummy-data/data";
+import { HiCurrencyDollar } from "react-icons/hi2";
+import { FaAward } from "react-icons/fa6";
+import { IoTicket } from "react-icons/io5";
+import { MdAnalytics } from "react-icons/md";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
-type Props = {};
+const FeaturesSection = () => {
+  const featuresData = [
+    {
+      header: "Escrow-Backed Transactions.",
+      body: "Ensure event organizers are held accountable with funds securely stored in escrow, only released when the event happens. If not, attendees get automatic refunds—no fuss, no middlemen.",
+      icon: (
+        <HiCurrencyDollar
+          size={50}
+          className="text-subsidiary group-hover:text-white -ml-8 -mt-8 -rotate-45"
+        />
+      ),
+    },
+    {
+      header: "Earn Digital Collectibles-POAPs.",
+      body: "Earn unique, blockchain-backed POAP badges for attending events. These digital collectibles serve as lasting mementos, securely stored and verifiable on the blockchain!",
+      icon: (
+        <FaAward
+          size={50}
+          className="text-subsidiary group-hover:text-white -ml-8 -mt-8 -rotate-45"
+        />
+      ),
+    },
+    {
+      header: "Effortless Event Management.",
+      body: "Easily manage ticket sales, attendee tracking, and event logistics all in one secure, decentralized platform. Focus on your event, and let HostIt handle the rest!",
+      icon: (
+        <IoTicket
+          size={50}
+          className="text-subsidiary group-hover:text-white -ml-8 -mt-8 -rotate-90"
+        />
+      ),
+    },
+    {
+      header: "Real-Time Event Analytics",
+      body: "Organizers can track ticket sales, attendance, and more, all in real-time with complete transparency and security, ensuring a smooth event experience from start to finish.",
+      icon: (
+        <MdAnalytics
+          size={50}
+          className="text-subsidiary group-hover:text-white -ml-8 -mt-8 -rotate-45"
+        />
+      ),
+    },
+  ];
+  
+  const { ref, inView } = useInView({
+    threshold: 0.2, // adjust the threshold as needed
+  });
 
-const FeaturesSection = (props: Props) => {
+  const variants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    
-      <div className="max-w-[1280px] mx-auto justify-between flex items-center flex-row flex-wrap-reverse space-x-4 my-20 ">
-        <div className="flex flex-row justify-center flex-wrap mx-[5%] md:space-x-4 z-50">
-          <div className="flex flex-col md:mt-20">
-            {featuresCardDetails1.map((details, index) => {
-              return (
-                <FeaturesCard
-                  header={details.header}
-                  body={details.body}
-                  key={index}
-                />
-              );
-            })}
-          </div>
-          <div className="flex flex-col">
-            {featuresCardDetails2.map((details, index) => {
-              return (
-                <FeaturesCard
-                  header={details.header}
-                  body={details.body}
-                  key={index}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <div className="flex flex-col gap-5 z-50 text-white w-full md:w-[550px]">
-          <h1 className="font-semibold text-5xl">Our Features</h1>
-          <p>
-            HostIT, we’re rewriting the rules of event ticketing. Our platform
-            enables organizers to manage events seamlessly, while attendees
-            benefit from fast, secure on-chain verification, eliminating the
-            risk of fake tickets and the frustrations of manual check-ins.
-          </p>
-          <p>
-            By leveraging smart contracts, digital collectibles, and real-time
-            analytics, HostIT is helping events run smoothly from start to
-            finish, delivering a new standard in event management.
-          </p>
-          <Button className="w-60 mt-4 md:mt-0 md:w-80 bg-principal border border-principal text-textPrincipal text-base font-semibold py-4 px-4 rounded-full hover:text-principal hover:bg-transparent md:py-6 md:px-12 md:text-xl">
-            Learn More
-          </Button>
-        </div>
+    <div ref={ref} className="flex flex-col gap-2 px-4">
+      <div className="flex justify-center ">
+        <h4 className="px-8 py-2 rounded-full border border-subsidiary bg-gradient-to-r from-[#007CFA] from-30% to-white to-80% bg-clip-text font-semibold  text-transparent">
+          FEATURES
+        </h4>
       </div>
+      <h1 className="text-center text-wrap bg-gradient-to-r from-[#007CFA] from-30% to-white to-80% bg-clip-text text-transparent text-4xl md:text-6xl md:leading-relaxed font-semibold md:font-normal">
+        Why We Stand Out
+      </h1>
+      <p className="text-lg text-center mx-auto max-w-[360px]">
+        Effortless ticketing, seamless verification—HostIT takes care of the
+        details, so you can focus on unforgettable events.
+      </p>
+
+      <motion.div
+        initial="hidden"
+        animate={inView ? "visible" : "hidden"}
+        variants={variants}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        className="max-w-[1280px] mx-auto flex gap-4 flex-grow flex-wrap items-center justify-center"
+      >
+        {featuresData.map(({ header, body, icon }, index) => {
+          return (
+            <FeaturesCard key={index} header={header} body={body} icon={icon} />
+          );
+        })}
+      </motion.div>
+    </div>
   );
 };
 

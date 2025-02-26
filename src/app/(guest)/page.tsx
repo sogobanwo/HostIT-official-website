@@ -2,33 +2,38 @@
 
 import FeaturesSection from "@/components/landing-page/FeaturesSection";
 import HeroSection from "@/components/landing-page/HeroSection";
+import ReviewSection from "@/components/landing-page/ReviewSection";
+import ScrollSection from "@/components/landing-page/ScrollSection";
 import Footer from "@/components/shared-components/Footer";
+import Header from "@/components/shared-components/Header";
+import { motion } from "framer-motion";
 import React from "react";
 
 const page = () => {
   return (
-    <>
+    <div className="mx-auto space-y-8">
+      <Header />
       <HeroSection />
-      <div className="overflow-x-hidden overflow-y-hidden bg-gradient-to-tr from-[#595858] to-[#000107] relative w-full">
-      <img
-        src="/left-glow.png"
-        alt="Background Image 2"
-        className="absolute hidden md:flex -top-20 left-0"
-      />
-      <img
-        src="/right-glow.png"
-        alt="Background Image 3"
-        className="absolute -top-12 right-0 hidden md:flex"
-      />
-      <img
-        src="/line-pattern.png"
-        alt="Background Image 4"
-        className="absolute top-1/4 left-0 w-full"
-      />
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1, duration: 1.5 }}
+        className="max-w-[1280px] mx-auto"
+      >
+        <img
+          src={"/hostitgif.gif"}
+          alt="hostit-gif"
+          className="mr-10 clip-path shadow-2xl"
+          style={{
+            clipPath: "inset(30px 0px 60px 70px)",
+          }}
+        />
+      </motion.div>
       <FeaturesSection />
+      <ReviewSection />
+      <ScrollSection />
       <Footer />
-      </div>
-    </>
+    </div>
   );
 };
 
