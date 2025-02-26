@@ -12,7 +12,7 @@ type Props = {
 const ReviewCardMobile = ({image, name, review, role}: Props) => {
   return (
           <Card
-            className={`w-80 my-4 border border-subsidiary py-5 bg-subsidiary h-[500px] relative flex justify-center items-center flex-col`}
+            className={`w-80 my-4 border border-subsidiary py-5 bg-subsidiary h-[500px] relative flex justify-center items-center flex-col mx-2`}
           >
             <Image
               src={image}
