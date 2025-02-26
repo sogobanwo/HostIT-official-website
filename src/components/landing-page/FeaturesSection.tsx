@@ -51,7 +51,7 @@ const FeaturesSection = () => {
   ];
   
   const { ref, inView } = useInView({
-    threshold: 0.2, // adjust the threshold as needed
+    threshold: 0.2,
   });
 
   const variants = {

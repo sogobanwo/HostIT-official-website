@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { FaTelegramPlane } from "react-icons/fa";
-import { FaSquareFacebook, FaSquareXTwitter, FaYoutube } from "react-icons/fa6";
+import { FaSquareXTwitter, FaYoutube } from "react-icons/fa6";
 import { RiInstagramFill } from "react-icons/ri";
 
 const Header = () => {
