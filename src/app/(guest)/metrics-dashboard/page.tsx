@@ -21,7 +21,7 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto space-y-8 max-w-[1280px]">
       <Header />
-      <div className="md:h-[70vh] flex justify-center items-center">
+      <div className="md:h-[70vh] flex flex-col justify-center items-center">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-semibold tracking-tight">
@@ -111,6 +111,13 @@ export default function DashboardPage() {
                         600+ attendees
                       </p>
                     </div>
+                    <a
+                      target="_blank"
+                      href="https://poap.gallery/drops/178024"
+                      className="ml-auto text-xs group-hover:text-white hover:underline"
+                    >
+                      View POAP drop...
+                    </a>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="mr-2 h-6 w-6 text-text group-hover:text-white" />
@@ -122,6 +129,13 @@ export default function DashboardPage() {
                         400+ attendees
                       </p>
                     </div>
+                    <a
+                      target="_blank"
+                      href="https://poap.gallery/drops/179820"
+                      className="ml-auto text-xs group-hover:text-white hover:underline"
+                    >
+                      View POAP drop...
+                    </a>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="mr-2 h-6 w-6 text-text group-hover:text-white" />
@@ -133,17 +147,31 @@ export default function DashboardPage() {
                         600+ attendees
                       </p>
                     </div>
+                    <a
+                      target="_blank"
+                      href="https://poap.gallery/drops/179804"
+                      className="ml-auto text-xs group-hover:text-white hover:underline"
+                    >
+                      View POAP drop...
+                    </a>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="mr-2 h-6 w-6 text-text group-hover:text-white" />
                     <div className="ml-4 space-y-1">
                       <p className="text-xl font-semibold leading-none group-hover:text-white">
-                        Blockchain In Unilag 
+                        Blockchain In Unilag
                       </p>
                       <p className="text-sm text-text group-hover:text-white">
                         700+ attendees
                       </p>
                     </div>
+                    <a
+                      target="_blank"
+                      href="https://poap.gallery/drops/182686"
+                      className="ml-auto text-xs group-hover:text-white hover:underline"
+                    >
+                      View POAP drop...
+                    </a>
                   </div>
                   <div className="flex items-center">
                     <CheckCircle className="mr-2 h-6 w-6 text-text group-hover:text-white" />
@@ -161,7 +189,16 @@ export default function DashboardPage() {
             </Card>
           </div>
         </div>
+        <a
+        href="https://blockscout.lisk.com/address/0xe639110D69ec5b5C4ECa926271fa2f82Ee94A2D3"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="underline text-text hover:text-subsidiary text-2xl text-center w-full flex justify-center mb-4"
+      >
+        View transactions
+      </a>
       </div>
+    
       <Footer />
     </div>
   );
