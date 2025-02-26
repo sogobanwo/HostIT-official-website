@@ -37,7 +37,7 @@ const Header = () => {
       </Link>
       <Dialog>
         <DialogTrigger className="flex items-center gap-2 text-white md:text-lg bg-subsidiary px-4 md:px-6 py-2 md:py-3 rounded-lg hover:bg-black">
-          Launch App <BsFillRocketTakeoffFill />
+          Launch dApp <BsFillRocketTakeoffFill />
         </DialogTrigger>
         <DialogContent className="bg-principal border-subsidiary">
           <DialogHeader className="flex flex-col gap-6">
