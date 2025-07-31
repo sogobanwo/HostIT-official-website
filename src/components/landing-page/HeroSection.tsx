@@ -51,7 +51,7 @@ const HeroSection = () => {
         whileHover={{ scale: 1.05 }} 
         whileTap={{ scale: 0.95 }} 
       >
-        <a href="https://calendly.com/fullstackchat/30min" target="_blank">
+        <a href="https://calendly.com/hostit-chat/30min" target="_blank">
           <Button className="flex items-center justify-center gap-2 text-white text-base md:text-lg bg-subsidiary p-6 mx-auto">
             Request Our Services
           </Button>
