@@ -145,7 +145,7 @@ const CheckInTab = () => {
         body: JSON.stringify({
           email: selected.email,
           event: "web3lagos",
-          day: 2,
+          day: 3,
         }),
       });
       if (!res.ok) throw new Error("Verification failed");
