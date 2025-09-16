@@ -36,8 +36,6 @@ const RegisterPage = () => {
     role: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));

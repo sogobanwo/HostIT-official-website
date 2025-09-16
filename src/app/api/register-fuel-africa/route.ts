@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Registration from "@/models/registrationModel";
 import Event from "@/models/eventModel";
 import { connectDB } from "@/lib/db";
-import { sendRegistrationEmail } from "@/lib/sendRegistrationEmail";
 
 interface FuelAfricaRegistration {
   name: string;
@@ -32,15 +31,6 @@ export async function POST(request: NextRequest) {
 
     // Find or create the Fuel Africa event
     let event = await Event.findOne({ name: "Fuel Africa Event" });
-    if (!event) {
-      event = await Event.create({
-        name: "Fuel Africa Event",
-        description: "Fuel Africa - Shaping the future of Web3 in Africa",
-        startDate: new Date("2025-09-27T10:00:00Z"),
-        location: "Lagos, Nigeria",
-        isActive: true
-      });
-    }
 
     // Check for existing registration
     const existingRegistration = await Registration.findOne({
@@ -71,31 +61,6 @@ export async function POST(request: NextRequest) {
       role: body.role || null,
       registrationDate: new Date(),
     });
-
-    // Send confirmation email
-    try {
-      await sendRegistrationEmail({
-       email: body.email,
-          name: body.name,
-          eventName: "Fuel Africa Event",
-          eventDate: "27th September, 2025",
-          eventTime: "10:00 AM WAT",
-          eventLocation: "Lagos, Nigeria",
-          eventUrl: "https://hostit.events/w3lc/fuel-africa",
-          eventDescription: "Welcome to <strong style=\"color: #007CFA;\">Fuel Africa Event</strong>! 🚀 We're thrilled to have you join us in shaping the future of Web3 in Africa.",
-          eventHighlights: [
-            "Cutting-edge Web3 insights and trends",
-            "Networking with Africa's top blockchain innovators",
-            "Hands-on workshops and technical sessions",
-            "Exclusive access to funding opportunities"
-          ],
-          organizerName: "HostIT",
-          supportEmail: "support@hostit.events",
-          websiteUrl: "https://hostit.events",
-      });
-    } catch (emailError) {
-      console.error("Failed to send confirmation email:", emailError);
-    }
 
     return NextResponse.json(
       {
