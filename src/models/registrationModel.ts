@@ -88,5 +88,9 @@ const RegistrationSchema: Schema = new Schema({
 
 // Create compound index for eventId and email to prevent duplicate registrations
 RegistrationSchema.index({ eventId: 1, email: 1 }, { unique: true });
+// Add individual indexes for better query performance
+RegistrationSchema.index({ email: 1 });
+RegistrationSchema.index({ eventId: 1 });
+RegistrationSchema.index({ registrationDate: -1 });
 
 export default mongoose.models.Registration || mongoose.model<IRegistration>('Registration', RegistrationSchema);

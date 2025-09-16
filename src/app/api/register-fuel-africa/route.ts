@@ -19,9 +19,18 @@ interface FuelAfricaRegistration {
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    // Set timeout for database operations
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Request timeout')), 25000)
+    );
 
-    const body: FuelAfricaRegistration = await request.json();
+    const processRequest = async () => {
+      await connectDB();
+      const body: FuelAfricaRegistration = await request.json();
+      return body;
+    };
+
+    const body = await Promise.race([processRequest(), timeoutPromise]) as FuelAfricaRegistration;
     
     // Validate required fields
     const requiredFields = ["name", "email", "phone", "country"];
@@ -113,72 +122,81 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Find or create Fuel Africa event
-    let event = await Event.findOne({ name: "Fuel Africa Event" });
-    if (!event) {
-      event = await Event.create({
-        name: "Fuel Africa Event",
-        description: "Fuel Africa - Shaping the future of Web3 in Africa",
-        startDate: new Date("2025-09-27T10:00:00Z"),
-        location: "Lagos, Nigeria",
-        isActive: true
-      });
-    }
+    // Optimize database operations with timeout
+    const dbOperations = async () => {
+      // Find or create Fuel Africa event
+      let event = await Event.findOne({ name: "Fuel Africa Event" });
+      if (!event) {
+        event = await Event.create({
+          name: "Fuel Africa Event",
+          description: "Fuel Africa - Shaping the future of Web3 in Africa",
+          startDate: new Date("2025-09-27T10:00:00Z"),
+          location: "Lagos, Nigeria",
+          isActive: true
+        });
+      }
 
-    // Check for existing registration
-    const existingRegistration = await Registration.findOne({
-      eventId: event._id,
-      email: body.email,
-    });
-
-    if (existingRegistration) {
-      return NextResponse.json(
-        { message: "User is already registered for this event" },
-        { status: 409 }
-      );
-    }
-
-    // Create registration
-    const registration = await Registration.create({
-      eventId: event._id,
-      eventName: event.name,
-      name: body.name,
-      email: body.email,
-      phone: body.phone,
-      country: body.country,
-      location: body.location || null,
-      gender: body.gender || null,
-      github: body.github || null,
-      telegramusername: body.telegramusername || null,
-      xhandle: body.xhandle || null,
-      role: body.role || null,
-      registrationDate: new Date(),
-    });
-
-    // Send registration email
-    try {
-      await sendRegistrationEmail({
+      // Check for existing registration
+      const existingRegistration = await Registration.findOne({
+        eventId: event._id,
         email: body.email,
-        name: body.name,
-        eventName: "Fuel Africa Event",
-        eventDate: "27th September, 2025",
-        eventTime: "10:00 AM WAT",
-        eventLocation: "Lagos, Nigeria",
-        eventUrl: "https://hostit.events/w3lc/fuel-africa",
-        eventDescription: "Welcome to <strong style=\"color: #007CFA;\">Fuel Africa Event</strong>! 🚀 We're thrilled to have you join us in shaping the future of Web3 in Africa.",
-        eventHighlights: [
-          "Cutting-edge Web3 insights and trends",
-          "Networking with Africa's top blockchain innovators",
-          "Hands-on workshops and technical sessions",
-          "Exclusive access to funding opportunities"
-        ],
-        organizerName: "HostIT",
-        supportEmail: "support@hostit.events",
-        websiteUrl: "https://hostit.events",
       });
-    } catch (emailError) {
-      console.error("Failed to send confirmation email:", emailError);
-    }
+
+      if (existingRegistration) {
+        throw new Error('DUPLICATE_REGISTRATION');
+      }
+
+      // Create registration
+      const registration = await Registration.create({
+        eventId: event._id,
+        eventName: event.name,
+        name: body.name,
+        email: body.email,
+        phone: body.phone,
+        country: body.country,
+        location: body.location || null,
+        gender: body.gender || null,
+        github: body.github || null,
+        telegramusername: body.telegramusername || null,
+        xhandle: body.xhandle || null,
+        role: body.role || null,
+        registrationDate: new Date(),
+      });
+
+      return { event, registration };
+    };
+
+    const { event, registration } = await Promise.race([
+      dbOperations(),
+      timeoutPromise
+    ]) as { event: any, registration: any };
+
+    // Send registration email asynchronously to avoid blocking
+    setImmediate(async () => {
+      try {
+        await sendRegistrationEmail({
+          email: body.email,
+          name: body.name,
+          eventName: "Fuel Africa Event",
+          eventDate: "27th September, 2025",
+          eventTime: "10:00 AM WAT",
+          eventLocation: "Lagos, Nigeria",
+          eventUrl: "https://hostit.events/w3lc/fuel-africa",
+          eventDescription: "Welcome to <strong style=\"color: #007CFA;\">Fuel Africa Event</strong>! 🚀 We're thrilled to have you join us in shaping the future of Web3 in Africa.",
+          eventHighlights: [
+            "Cutting-edge Web3 insights and trends",
+            "Networking with Africa's top blockchain innovators",
+            "Hands-on workshops and technical sessions",
+            "Exclusive access to funding opportunities"
+          ],
+          organizerName: "HostIT",
+          supportEmail: "support@hostit.events",
+          websiteUrl: "https://hostit.events",
+        });
+      } catch (emailError) {
+        console.error("Failed to send confirmation email:", emailError);
+      }
+    });
 
     return NextResponse.json(
       {
@@ -192,6 +210,21 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     if (error instanceof Error) {
       console.error("Error creating registration:", error.message);
+      
+      if (error.message === 'DUPLICATE_REGISTRATION') {
+        return NextResponse.json(
+          { message: "User is already registered for this event" },
+          { status: 409 }
+        );
+      }
+      
+      if (error.message === 'Request timeout') {
+        return NextResponse.json(
+          { message: "Request timeout - please try again" },
+          { status: 408 }
+        );
+      }
+      
       return NextResponse.json(
         { message: "Failed to create registration" },
         { status: 500 }

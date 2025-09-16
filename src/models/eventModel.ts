@@ -60,4 +60,9 @@ const EventSchema: Schema = new Schema({
   timestamps: true
 });
 
+// Add indexes for better query performance
+EventSchema.index({ name: 1 }, { unique: true });
+EventSchema.index({ isActive: 1 });
+EventSchema.index({ startDate: 1 });
+
 export default mongoose.models.Event || mongoose.model<IEvent>('Event', EventSchema);

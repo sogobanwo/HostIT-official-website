@@ -25,19 +25,40 @@ export const connectDB = async () => {
   }
 
   if (!cached.promise) {
+    const opts = {
+      tls: true,
+      tlsAllowInvalidCertificates: true,
+      serverSelectionTimeoutMS: 10000, // 10 seconds
+      socketTimeoutMS: 20000, // 20 seconds
+      connectTimeoutMS: 10000, // 10 seconds
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      minPoolSize: 5, // Maintain a minimum of 5 socket connections
+      maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+      bufferCommands: false, // Disable mongoose buffering
+      bufferMaxEntries: 0, // Disable mongoose buffering
+    };
+
     cached.promise = mongoose
       .connect(
         `${MONGODB_URI}?retryWrites=true&w=majority&tls=true&tlsAllowInvalidCertificates=true`,
-        {
-          tls: true,
-          tlsAllowInvalidCertificates: true,
-        }
+        opts
       )
       .then((mongoose) => {
+        console.log('MongoDB connected successfully');
         return mongoose;
+      })
+      .catch((error) => {
+        console.error('MongoDB connection error:', error);
+        cached.promise = null; // Reset promise on error
+        throw error;
       });
   }
 
-  cached.conn = await cached.promise;
-  return cached.conn;
+  try {
+    cached.conn = await cached.promise;
+    return cached.conn;
+  } catch (error) {
+    cached.promise = null; // Reset promise on error
+    throw error;
+  }
 };
