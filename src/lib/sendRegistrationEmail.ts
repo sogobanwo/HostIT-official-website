@@ -34,7 +34,6 @@ export async function sendRegistrationEmail({
   websiteUrl?: string;
 }) {
 
-
   await resend.emails.send({
     from: "HostIt Events <noreply@hostit.events>",
     to: email,
