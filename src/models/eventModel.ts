@@ -17,7 +17,6 @@ const EventSchema: Schema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
     maxlength: 200
   },
   description: {

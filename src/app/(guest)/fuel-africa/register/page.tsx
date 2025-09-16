@@ -67,7 +67,7 @@ const RegisterPage = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("/api/register-fuel-africa", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/register-fuel-africa`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

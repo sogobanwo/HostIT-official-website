@@ -19,7 +19,6 @@ interface FuelAfricaRegistration {
 
 export async function POST(request: NextRequest) {
   try {
-    // Set timeout for database operations
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Request timeout')), 25000)
     );
