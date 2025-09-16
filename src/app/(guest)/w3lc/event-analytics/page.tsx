@@ -15,7 +15,6 @@ import { IoCartOutline } from "react-icons/io5";
 import { RiShieldUserLine } from "react-icons/ri";
 import { PiBroadcast } from "react-icons/pi";
 import { MdMoveToInbox } from "react-icons/md";
-import { MdOutlineQrCodeScanner } from "react-icons/md"; 
 import CheckInTab from "@/components/dashboard/CheckinTab";
 
 const Page = () => {

@@ -144,8 +144,8 @@ const CheckInTab = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: selected.email,
-          event: "web3lagos",
-          day: 3,
+          event: "fuel-africa",
+          day: 1,
         }),
       });
       if (!res.ok) throw new Error("Verification failed");
