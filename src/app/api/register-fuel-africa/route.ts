@@ -200,8 +200,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         message: "Registration successful for Fuel Africa event",
-        registrationId: registration._id,
-        eventId: registration.eventId,
+        registrationId: registration._id.toString(),
+        eventId: registration.eventId.toString(),
         eventName: registration.eventName,
       },
       { status: 201 }
