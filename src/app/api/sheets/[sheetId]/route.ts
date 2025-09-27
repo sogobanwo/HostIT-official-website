@@ -1,8 +1,6 @@
 import { SheetError, SheetResponse } from '@/types/sheets';
 import { google } from 'googleapis';
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs';
 
 interface RouteParams {
   params: {
@@ -28,35 +26,23 @@ export async function GET(
   let credentials: any;
 
   try {
-    // Try environment variables first (for production)
-    if (process.env.GOOGLE_SHEETS_PRIVATE_KEY && process.env.GOOGLE_SHEETS_CLIENT_EMAIL) {
-      credentials = {
-        client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY.replace(/\\n/g, '\n'),
-      };
-    } else {
-      // Fallback to credentials.json file (for development)
-      const credentialsPath = path.join(process.cwd(), 'credentials.json');
-      
-      if (!fs.existsSync(credentialsPath)) {
-        console.error('credentials.json file not found at:', credentialsPath);
-        return NextResponse.json(
-          { error: 'Google Sheets API configuration error: credentials.json file not found and environment variables not set' },
-          { status: 500 }
-        );
-      }
-
-      try {
-        const credentialsFile = fs.readFileSync(credentialsPath, 'utf8');
-        credentials = JSON.parse(credentialsFile);
-      } catch (parseError) {
-        console.error('Error parsing credentials.json:', parseError);
-        return NextResponse.json(
-          { error: 'Google Sheets API configuration error: Invalid credentials.json format' },
-          { status: 500 }
-        );
-      }
+    // Use environment variables for Google Sheets authentication
+    const clientEmail = process.env.GOOGLE_SHEETS_CLIENT_EMAIL;
+    const privateKey = process.env.GOOGLE_SHEETS_PRIVATE_KEY;
+    
+    if (!clientEmail || !privateKey) {
+      console.error('Missing Google Sheets environment variables');
+      return NextResponse.json(
+        { error: 'Google Sheets API configuration error: Missing environment variables' },
+        { status: 500 }
+      );
     }
+
+    credentials = {
+      type: 'service_account',
+      client_email: clientEmail,
+      private_key: privateKey.replace(/\\n/g, '\n'), // Handle escaped newlines
+    };
 
     // Validate required fields in credentials
     if (!credentials.client_email || !credentials.private_key) {
