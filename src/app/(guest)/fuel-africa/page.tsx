@@ -17,7 +17,7 @@ const Page = () => {
     if (typeof window !== "undefined") {
       const isLoggedIn = localStorage.getItem("fuel-africa_logged_in");
       if (isLoggedIn === "true") {
-        router.push("/fuel-africa/event");
+        router.push("/fuel-africa/event-analytics");
       }
     }
   }, [router]);
@@ -29,7 +29,7 @@ const Page = () => {
     organizerToken === process.env.NEXT_PUBLIC_EVENT_TOKEN
   ) {
     localStorage.setItem("fuel-africa_logged_in", "true");
-    router.push("/fuel-africa/event");
+    router.push("/fuel-africa/event-analytics");
   } else {
     toast.error("Invalid event name or token.");
   }
