@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { GoDotFill } from "react-icons/go";
 import { useRouter } from "next/navigation";
@@ -15,35 +15,11 @@ import { IoCartOutline } from "react-icons/io5";
 import { RiShieldUserLine } from "react-icons/ri";
 import { PiBroadcast } from "react-icons/pi";
 import { MdMoveToInbox } from "react-icons/md";
-import FuelAfricaCheckinTab from "@/components/dashboard/FuelAfricaCheckinTab";
+import CheckInTab from "@/components/dashboard/CheckinTab";
 
 const Page = () => {
- const router = useRouter();
-  const [registrations, setRegistrations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [count, setCount] = useState(0);
+  const router = useRouter();
 
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout;
-
-    const fetchRegistrations = async () => {
-      try {
-        const res = await fetch(`/api/sheets/1bXbPlzySFphNRNT8-_bcifHdMywvceX-6VZsDrF_Pko?range=Form Responses 1`);
-        const data = await res.json();
-        setRegistrations(data.data || []);
-        setCount(data.totalResponses || 0);
-        setLoading(false);
-      } catch (err) {
-        setLoading(false);
-      }
-    };
-
-    fetchRegistrations();
-    intervalId = setInterval(fetchRegistrations, 10000);
-
-    return () => clearInterval(intervalId);
-  }, []);  
-  
   return (
     <Tabs defaultValue="details" className="w-full">
       <div className="mx-4 sm:mx-6 lg:mx-8 2xl:mx-12">
@@ -114,8 +90,8 @@ const Page = () => {
             {/* Left Column - Event Image and Description */}
             <div className="w-full lg:w-2/3 relative">
               <img
-                src="https://pbs.twimg.com/profile_banners/1412772391420403718/1715181605/1500x500"
-                alt="fuel-africa-event-image"
+                src="https://res.cloudinary.com/dnohqlmjc/image/upload/v1760147297/Screenshot_2025-10-11_at_02.47.48_thvrdr.png"
+                alt="The Elite Experience event-image"
                 className="w-full rounded-3xl h-48 sm:h-56 2xl:h-64 object-cover"
               />
 
@@ -130,25 +106,33 @@ const Page = () => {
               </div>
 
               <p className="text-white text-base sm:text-lg 2xl:text-xl leading-relaxed mb-4">
-                Fuel Africa is a groundbreaking conference focused on accelerating blockchain 
-                adoption and innovation across the African continent. This premier event brings 
-                together developers, entrepreneurs, investors, and thought leaders to explore 
-                the transformative potential of blockchain technology in solving Africa's unique challenges.
+                ​Join us for The Elite Experience, a dynamic conference designed
+                hosted by The Elite Services at the iconic Redemption City Old
+                Arena in Ogun State
               </p>
 
               <p className="text-white text-base sm:text-lg 2xl:text-xl leading-relaxed mb-4">
-                Event Overview: Fuel Africa features keynote presentations from industry leaders, 
-                hands-on workshops, panel discussions on regulatory frameworks, startup pitch 
-                competitions, and extensive networking opportunities. The conference covers 
-                DeFi solutions, NFT marketplaces, supply chain transparency, digital identity, 
-                and financial inclusion initiatives tailored for African markets.
+                ​This event brings together industry experts and peers for a
+                morning of insightful discussions, networking, and professional
+                growth.
               </p>
-              
+
               <p className="text-white text-base sm:text-lg 2xl:text-xl leading-relaxed mb-4">
-                Whether you're a blockchain enthusiast, fintech entrepreneur, or policy maker, 
-                Fuel Africa provides the platform to connect, learn, and collaborate on building 
-                the future of blockchain in Africa. Join us for this transformative experience 
-                that's shaping the continent's digital economy.
+                If you are looking to sharpen your skills, exchange ideas, or
+                connect with others in your field as a:
+                <br />
+                ​Protocol officer
+                <br />
+                ​Close protection officer
+                <br />
+                ​Hospitality professional
+                <br />
+                ​Executive assistant
+                <br />
+                ​Confidentiality secretary
+                <br />​The Elite Experience offers a welcoming space to learn
+                and collaborate. Don’t miss this opportunity to elevate your
+                expertise and be part of a vibrant professional community.
               </p>
             </div>
 
@@ -157,7 +141,7 @@ const Page = () => {
               {/* Event Title and Date */}
               <div>
                 <h1 className="text-xl sm:text-2xl 2xl:text-3xl font-semibold bg-gradient-to-r from-[#007CFA] from-30% to-white to-95% bg-clip-text text-transparent">
-                  Fuel Africa Conference 2024
+                  The Elite Experience
                 </h1>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-start sm:items-center mt-2">
                   <p className="uppercase text-sm sm:text-base 2xl:text-lg text-white">
@@ -213,7 +197,7 @@ const Page = () => {
         </TabsContent>
 
         <TabsContent value="check-in" className="min-h-[82vh] mb-10 lg:mb-0">
-          <FuelAfricaCheckinTab sheetId="1bXbPlzySFphNRNT8-_bcifHdMywvceX-6VZsDrF_Pko" />
+          <CheckInTab />
         </TabsContent>
         <TabsContent
           value="live-updates"
@@ -221,19 +205,25 @@ const Page = () => {
         >
           <div className="text-white text-center py-20">
             <h2 className="text-2xl font-bold mb-4">Live Updates</h2>
-            <p>Live updates for Fuel Africa event will appear here.</p>
+            <p>Live updates for The Elite Experience event will appear here.</p>
           </div>
         </TabsContent>
         <TabsContent value="merch" className="min-h-[82vh] mb-10 lg:mb-0">
           <div className="text-white text-center py-20">
             <h2 className="text-2xl font-bold mb-4">Merchandise</h2>
-            <p>Fuel Africa event merchandise information will be displayed here.</p>
+            <p>
+              The Elite Experience event merchandise information will be
+              displayed here.
+            </p>
           </div>
         </TabsContent>
         <TabsContent value="role" className="min-h-[82vh] mb-10 lg:mb-0">
           <div className="text-white text-center py-20">
             <h2 className="text-2xl font-bold mb-4">Role Information</h2>
-            <p>Role-specific information for Fuel Africa event will be shown here.</p>
+            <p>
+              Role-specific information for The Elite Experience event will be
+              shown here.
+            </p>
           </div>
         </TabsContent>
       </div>

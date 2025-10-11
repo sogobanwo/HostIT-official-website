@@ -15,9 +15,9 @@ const Page = () => {
 
    useEffect(() => {
     if (typeof window !== "undefined") {
-      const isLoggedIn = localStorage.getItem("fuel-africa_logged_in");
+      const isLoggedIn = localStorage.getItem("TEE-africa_logged_in");
       if (isLoggedIn === "true") {
-        router.push("/fuel-africa/event-analytics");
+        router.push("/the-elite-exp/event-analytics");
       }
     }
   }, [router]);
@@ -28,8 +28,8 @@ const Page = () => {
     eventName === process.env.NEXT_PUBLIC_EVENT_NAME &&
     organizerToken === process.env.NEXT_PUBLIC_EVENT_TOKEN
   ) {
-    localStorage.setItem("fuel-africa_logged_in", "true");
-    router.push("/fuel-africa/event-analytics");
+    localStorage.setItem("TEE-africa_logged_in", "true");
+    router.push("/the-elite-exp/event-analytics");
   } else {
     toast.error("Invalid event name or token.");
   }
