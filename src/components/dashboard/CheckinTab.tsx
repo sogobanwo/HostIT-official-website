@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+// Using server API route to avoid CORS when calling Luma directly
 
 type Registration = {
   id: number | string;
@@ -37,7 +38,7 @@ type Registration = {
 };
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL;
-const VERIFY = process.env.NEXT_PUBLIC_VERIFY_URL;
+const LUMA_EVENT_ID = process.env.NEXT_PUBLIC_LUMA_EVENT_ID || "";
 
 const CheckInTab = () => {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
@@ -57,37 +58,55 @@ const CheckInTab = () => {
   const [verifying, setVerifying] = useState(false);
 
   const [verifiedEmails, setVerifiedEmails] = useState<Set<string>>(new Set());
+  const [verifiedTodayCount, setVerifiedTodayCount] = useState<number>(0);
 
-  /** Fetch ALL registrations across all pages */
+  /** Fetch ALL registrations from Luma for this event (via server route) */
   const fetchAllRegistrations = async () => {
     setLoading(true);
     try {
-      let url: string | null = `${BASE}/api/general-registrations/`;
-      let all: Registration[] = [];
-      let totalCount = 0;
-
-      while (url) {
-        const res: any = await fetch(url);
-        if (!res.ok) toast.error("Failed to fetch registrations");
-        const data = await res.json();
-
-        all = [...all, ...data.results];
-        totalCount = data.count;
-        url = data.next;
-      }
-
-      setRegistrations(all.reverse());
-      setRegisteredCount(totalCount);
-    } catch (e) {
+      const res = await fetch(
+        `/api/luma/get-guests?event_api_id=${encodeURIComponent(
+          LUMA_EVENT_ID
+        )}&pagination_limit=5000&all=1`
+      );
+      if (!res.ok) throw new Error(`Failed to fetch guests: ${res.status}`);
+      const data = await res.json();
+      const entries = (data?.entries || []) as any[];
+      const mapped: Registration[] = entries.map((g: any, index: number) => ({
+        id: `${g?.guest.user_email || g?.guest.email || index}-${index}`,
+        name: g?.guest.user_name || null,
+        email: g?.guest.user_email || g?.guest.email || "",
+        phone: null,
+        location: g?.guest.registration_answers[1].answer,
+        role: g?.guest.registration_answers[0].answer,
+      }));
+      setRegistrations(mapped);
+      setRegisteredCount(mapped.length);
+    } catch (e: any) {
       console.error(e);
-      toast.error("Could not load registrations");
+      toast.error(e?.message || "Could not load registrations from Luma");
     } finally {
       setLoading(false);
     }
   };
 
+  /** Fetch TODAY verified count from attendance API (server proxy) */
+  const fetchVerifiedTodayCount = async () => {
+    try {
+      const res = await fetch(`/api/attendance/verified-count`);
+      if (!res.ok) throw new Error(`Failed to fetch verified count: ${res.status}`);
+      const data = await res.json();
+      const c = typeof data?.count === "number" ? data.count : 0;
+      setVerifiedTodayCount(c);
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message || "Could not load today's verified count");
+    }
+  };
+
   useEffect(() => {
     fetchAllRegistrations();
+    fetchVerifiedTodayCount();
   }, []);
 
   /** Search suggestions (API-based) */
@@ -118,7 +137,7 @@ const CheckInTab = () => {
 
     try {
       const res = await fetch(
-        `${BASE}/api/verify-status?email=${encodeURIComponent(att.email)}`
+        `${BASE}api/verify-status?email=${encodeURIComponent(att.email)}`
       );
       if (res.ok) {
         const data = await res.json();
@@ -144,7 +163,7 @@ const CheckInTab = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: selected.email,
-          event: "fuel-africa",
+          event: "the-elite-experience",
           day: 1,
         }),
       });
@@ -189,6 +208,10 @@ const CheckInTab = () => {
             <li className="flex items-start gap-2 text-xs sm:text-sm">
               <GoDotFill className="mt-1 flex-shrink-0" />
               Check in attendee and wait for on-chain confirmation.
+            </li>
+            <li className="flex items-start gap-2 text-xs sm:text-sm">
+              <GoDotFill className="mt-1 flex-shrink-0" />
+              Data is fetched via Luma API for this event
             </li>
           </ul>
 
@@ -246,9 +269,9 @@ const CheckInTab = () => {
             </div>
             <div className="flex flex-col items-end">
               <h1 className="text-3xl sm:text-4xl font-bold text-white">
-                {verifiedCount}
+                {verifiedTodayCount}
               </h1>
-              <p className="text-xs">Verified</p>
+              <p className="text-xs">Verified Today</p>
             </div>
           </div>
         </div>
@@ -343,25 +366,10 @@ const CheckInTab = () => {
                   <b>Email:</b> {selected.email}
                 </p>
                 <p>
-                  <b>Gender:</b> {selected.gender || "N/A"}
-                </p>
-                <p>
-                  <b>Country:</b> {selected.country || "N/A"}
-                </p>
-                <p>
                   <b>Location:</b> {selected.location || "N/A"}
                 </p>
                 <p>
                   <b>Role:</b> {selected.role || "N/A"}
-                </p>
-                <p>
-                  <b>Telegram:</b> {selected.telegramusername || "N/A"}
-                </p>
-                <p>
-                  <b>X:</b> {selected.xhandle || "N/A"}
-                </p>
-                <p>
-                  <b>GitHub:</b> {selected.github || "N/A"}
                 </p>
                 <p className="mt-2">
                   <b>Status:</b>{" "}

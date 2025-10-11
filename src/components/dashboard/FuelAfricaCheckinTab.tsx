@@ -37,7 +37,9 @@ type FuelAfricaRegistration = {
   timestamp?: string | null;
 };
 
-const FuelAfricaCheckinTab = ({ sheetId }: { sheetId: string }) => {
+const BASE = process.env.NEXT_PUBLIC_BASE_URL;
+
+const FuelAfricaCheckinTab = () => {
   const [registrations, setRegistrations] = useState<FuelAfricaRegistration[]>([]);
   const [registeredCount, setRegisteredCount] = useState<number>(0);
   const [loading, setLoading] = useState(false);
@@ -56,61 +58,37 @@ const FuelAfricaCheckinTab = ({ sheetId }: { sheetId: string }) => {
 
   const [verifiedEmails, setVerifiedEmails] = useState<Set<string>>(new Set());
 
-  /** Fetch registrations from Google Sheets */
-  const fetchRegistrationsFromSheets = async () => {
+  /** Fetch registrations from Lum API */
+  const fetchRegistrations = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/sheets/${sheetId}?range=Form%20Responses%201`);
-      if (!res.ok) {
-        throw new Error("Failed to fetch registrations from Google Sheets");
-      }
-      
-      const response = await res.json();
-      
-      // Check if there's an error in the response
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      
-      // Transform Google Sheets data to match our Registration type
-      const transformedData: FuelAfricaRegistration[] = response.data.map((row: any, index: number) => {
-        // Map the Google Form response fields to our registration type
-        return {
-          id: index + 1,
-          timestamp: row["Timestamp"] || null,
-          name: row["Full Name (Required)"] || null,
-          email: row["Email Address (Required)"] || "",
-          phone: row["Phone Number (WhatsApp Preferred) (Required)"] || null,
-          role: row["Current Role (Multiple choice)"] || null,
-          country: null, // Not in the form
-          location: null, // Not in the form
-          gender: null, // Not in the form
-          github: null, // Not in the form
-          telegramusername: null, // Not in the form
-          xhandle: null, // Not in the form
-        };
-      });
+      let url: string | null = `${BASE}/api/general-registrations/`;
+      let all: FuelAfricaRegistration[] = [];
+      let totalCount = 0;
 
-      // Filter out empty entries
-      const filteredData = transformedData.filter((reg) => 
-        reg.email && reg.email.includes("@")
-      );
+      while (url) {
+        const res: any = await fetch(url);
+        if (!res.ok) toast.error("Failed to fetch registrations");
+        const data = await res.json();
 
-      setRegistrations(filteredData.reverse()); // Most recent first
-      setRegisteredCount(filteredData.length);
+        all = [...all, ...data.results];
+        totalCount = data.count;
+        url = data.next;
+      }
+
+      setRegistrations(all.reverse());
+      setRegisteredCount(totalCount);
     } catch (e) {
       console.error(e);
-      toast.error("Could not load registrations from Google Sheets");
+      toast.error("Could not load registrations");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (sheetId) {
-      fetchRegistrationsFromSheets();
-    }
-  }, [sheetId]);
+    fetchRegistrations();
+  }, []);
 
   /** Search suggestions (local filtering) */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -200,7 +178,7 @@ const FuelAfricaCheckinTab = ({ sheetId }: { sheetId: string }) => {
             </li>
             <li className="flex items-start gap-2 text-xs sm:text-sm">
               <GoDotFill className="mt-1 flex-shrink-0" />
-              Data is fetched from Google Forms responses via Google Sheets API
+              Data is fetched via Lum API
             </li>
           </ul>
 
@@ -270,14 +248,14 @@ const FuelAfricaCheckinTab = ({ sheetId }: { sheetId: string }) => {
       <div className="mt-8">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold text-white">
-            All Fuel Africa Registrations (from Google Sheets)
+            All Fuel Africa Registrations
           </h2>
           <Button
-            onClick={fetchRegistrationsFromSheets}
+            onClick={fetchRegistrations}
             disabled={loading}
             className="bg-subsidiary hover:bg-white hover:text-subsidiary"
           >
-            {loading ? "Refreshing..." : "Refetch from Sheets"}
+            {loading ? "Refreshing..." : "Refetch"}
           </Button>
         </div>
 
@@ -285,7 +263,7 @@ const FuelAfricaCheckinTab = ({ sheetId }: { sheetId: string }) => {
         {loading ? (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-subsidiary"></div>
-            <span className="ml-4 text-white text-lg">Loading attendees from Google Sheets...</span>
+            <span className="ml-4 text-white text-lg">Loading attendees...</span>
           </div>
         ) : (
           <div className="rounded-xl border border-white/20 max-h-[70vh] overflow-y-auto">
